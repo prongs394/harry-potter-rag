@@ -1,43 +1,73 @@
 # Harry Potter RAG Service
 
-A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, ChromaDB, and Groq. The service retrieves relevant context from Harry Potter text documents and makes answers using an LLM.
+A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, ChromaDB, and Groq. The service retrieves relevant context from Harry Potter text documents and generates answers using an LLM.
 
 ---
 
-## Architecture Overview
+## How It Works
 
-1. **First-Stage Dense Retrieval:**
-   - Embeds incoming queries using `sentence-transformers/all-MiniLM-L6-v2`.
-   - Performs fast vector similarity search in a persistent `ChromaDB` collection to retrieve candidate chunks.
+1. Step 1: Dense Retrieval
+   - Encodes user queries using sentence-transformers/all-MiniLM-L6-v2.
+   - Performs vector similarity search against candidate chunks stored in a local ChromaDB collection.
 
-2. **Context Window Expansion:**
-   - Automatically merges adjacent sibling chunks ($i-1$, $i$, $i+1$) to restore paragraph-level narrative context.
+2. Step 2: Context Window Expansion
+   - Merges adjacent sibling chunks (i-1, i, i+1) to restore paragraph-level context.
 
-3. **Second-Stage Cross-Encoder Reranking:**
-   - Reranks expanded candidate passages using `cross-encoder/ms-marco-MiniLM-L-6-v2` to score true semantic alignment with the query.
+3. Step 3: Cross-Encoder Reranking
+   - Reranks expanded candidate passages using cross-encoder/ms-marco-MiniLM-L-6-v2 to score true semantic alignment.
 
-4. **Generation & Guardrails:**
-   - Assembles the top-5 reranked contexts into a strict, context-bound prompt.
-   - Generates deterministic completions using Groq API (`llama-3.3-70b-versatile`) with temperature 0.0 to prevent hallucination.
+4. Step 4: Answer Generation
+   - Assembles the top-5 reranked contexts into a strict prompt.
+   - Generates deterministic completions via Groq API (llama-3.3-70b-versatile) with temperature 0.0.
 
 ---
 
 ## Tech Stack
 
-- **API Framework:** FastAPI, Uvicorn, Pydantic
-- **Vector Database:** ChromaDB (Persistent)
-- **Embedding Model:** `all-MiniLM-L6-v2`
-- **Reranker:** `cross-encoder/ms-marco-MiniLM-L-6-v2`
-- **LLM Engine:** Groq API (`llama-3.3-70b-versatile`)
+- API Framework: FastAPI, Uvicorn, Pydantic
+- Vector Database: ChromaDB (Persistent)
+- Embedding Model: all-MiniLM-L6-v2
+- Reranker: cross-encoder/ms-marco-MiniLM-L-6-v2
+- LLM Engine: Groq API (llama-3.3-70b-versatile)
 
 ---
 
 ## Project Structure
 
-```text
-.
-├── server.py                 # FastAPI application and retrieval pipeline
-├── rag_hp.ipynb              # Prototyping, indexing, and vector DB preparation
-├── requirements.txt          # Python dependencies
-├── .gitignore                # Protects environment keys and vector binaries
-└── README.md
+- server.py: FastAPI application and retrieval pipeline
+- rag_hp.ipynb: Prototyping, indexing, and vector DB preparation
+- project_requirements.txt: Python dependencies
+- .gitignore: Protects environment keys and vector binaries
+- README.md: Documentation
+
+---
+
+## Setup & Running Locally
+
+1. Clone the repository:
+   git clone https://github.com/prongs394/harry-potter-rag.git
+   cd harry-potter-rag
+
+2. Set up environment variables:
+   Get a free API key from https://console.groq.com/keys
+   Create a .env file in the root directory and add:
+   GROQ_API_KEY=your_actual_groq_api_key_here
+
+3. Install dependencies:
+   pip install -r project_requirements.txt
+
+4. Start the service:
+   python -m uvicorn server:app --host 0.0.0.0 --port 8000
+
+---
+
+## API Usage
+
+- Interactive API Docs (Swagger UI):
+  Visit http://localhost:8000/docs in your browser.
+
+- Sample cURL Request:
+  curl -X POST "http://localhost:8000/ask" -H "Content-Type: application/json" -d "{\"query\": \"Who are Harry's best friends?\"}"
+
+- Sample Response:
+  {"status": "success", "query": "Who are Harry's best friends?", "answer": "Harry's best friends are Ron Weasley and Hermione Granger."}
