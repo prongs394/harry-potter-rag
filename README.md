@@ -56,7 +56,11 @@ A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, Chr
 3. Install dependencies:
    pip install -r project_requirements.txt
 
-4. Start the service:
+4. Prepare Data & Build Vector Database:
+   - Provide your own Harry Potter book files (PDF / TXT). (No, the copyrighted books aren't in this repo—Accio Book won't fetch them for you either).
+   - Set the book file path in `rag_hp.ipynb` and run it once to chunk the text, generate embeddings, and build the local `chroma_db/` directory.
+
+5. Start the service:
    python -m uvicorn server:app --host 0.0.0.0 --port 8000
 
 ---
