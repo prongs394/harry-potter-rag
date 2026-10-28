@@ -1,6 +1,6 @@
 # Harry Potter RAG Service
 
-A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, ChromaDB, and Groq. The service retrieves relevant context from Harry Potter text documents and synthesizes grounded answers using an LLM.
+A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, ChromaDB, and Groq. The service retrieves relevant context from Harry Potter text documents and makes answers using an LLM.
 
 ---
 
