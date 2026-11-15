@@ -18,7 +18,7 @@ A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, Chr
 
 4. Step 4: Answer Generation
    - Assembles the top-5 reranked contexts into a strict prompt.
-   - Generates deterministic completions via Groq API (llama-3.3-70b-versatile) with temperature 0.0.
+   - Generates deterministic completions via Groq API (openai/gpt-oss-120b with temperature 0.0.
 
 ---
 
@@ -28,7 +28,7 @@ A two-stage Retrieval-Augmented Generation (RAG) backend built with FastAPI, Chr
 - Vector Database: ChromaDB (Persistent)
 - Embedding Model: all-MiniLM-L6-v2
 - Reranker: cross-encoder/ms-marco-MiniLM-L-6-v2
-- LLM Engine: Groq API (llama-3.3-70b-versatile)
+- LLM Engine: Groq API (openai/gpt-oss-120b)
 
 ---
 
